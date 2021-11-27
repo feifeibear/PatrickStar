@@ -9,9 +9,13 @@ Out of memory error (OOM) is the nightmare of every engineer training PTMs. To p
 
 We noticed that the GPU memory usage varies during training, but the current heterogenous training solutions are all statically spliting the model and optimizer states to CPU and GPU. To make better use of the GPU, PatrickStar proposes a dynamic memory scheduling with the help of a chunk-based memory management module. The memory management of PatrickStar supports offloading everything but the current computing part of the model to CPU. This results in training a much larger model within the same hardware environment. In terms of performance, the chunk-based memory management takes advantage of the linear structure of the transformer-based PTMs, so that it will inherently prefetch the upcoming layers to GPUs, resulting in a great performance.
 
-In experiment, Patrickstar is able to train a 12B param model with 8 Tesla V100 GPU and 240GB GPU memory, which is twice as large as the state of art. And the performance of PatrickStar is better for models of the same size as well. The deeps indicates performance of DeepSpeed v0.4.3 using the official example [DeepSpeed example](https://github.com/microsoft/DeepSpeedExamples/blob/master/Megatron-LM-v1.1.5-ZeRO3/examples/ds_pretrain_gpt2-zero3.sh) zero3 stage with activation optimzations openinig by default.
+In experiment, Patrickstar v0.3.0 is able to train a 12B param model with 8 Tesla V100 GPU and 240GB GPU memory, which is twice as large as the state of art. And the performance of PatrickStar is better for models of the same size as well. The deeps indicates performance of DeepSpeed v0.4.3 using the official example [DeepSpeed example](https://github.com/microsoft/DeepSpeedExamples/blob/master/Megatron-LM-v1.1.5-ZeRO3/examples/ds_pretrain_gpt2-zero3.sh) zero3 stage with activation optimzations openinig by default.
 
 ![alt perf](./doc/mgpu_scalability.png "performance testing result")
+
+We also evaluated PatrickStar v0.4.3 on a node of 8xA100 SuperPod. It is able to train 40B model on 8xA100 with 1TB CPU memory, which is 4x larger than DeepSpeed v0.5.7. Besides the model scale, PatrickStar is way more efficient than DeepSpeed, which makes us unbelievable, and we have to check it with DeepSpeed Team before presenting the DeepSpeed results. The benchmark scripts are in [./examples/benchmark](here).
+![alt perf](./doc/mgpu_perf_a100.png "performance testing result on SuperNode")
+
 
 We've also trained the [CLUE-GPT2](https://huggingface.co/uer/gpt2-chinese-cluecorpussmall) model with PatrickStar, the loss and accuracy curve is shown below:
 
